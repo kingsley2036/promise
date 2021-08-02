@@ -1,14 +1,23 @@
 class promise{
   succeed=null
   fail=null
-  resolve(){
+  state='pending'
+  resolve(result){
+    if(this.state!=='pending') return;
+    this.state='fulfilled'
     setTimeout(()=>{
-      this.succeed()
+      if(typeof this.succeed==='function'){
+        this.succeed.call(undefined,result)
+      }
      },0)
   }
-  reject(){
+  reject(reason){
+    if(this.state!=='pending') return;
+    this.state='rejected'
     setTimeout(()=>{
-      this.fail()
+      if(typeof this.fail==='function'){
+        this.fail.call(undefined,reason)
+      }
      },0)
   }
  constructor(fn){
@@ -17,9 +26,13 @@ class promise{
    } 
    fn(this.resolve.bind(this),this.reject.bind(this))
  } 
- then(succeed,fail){
-  this.succeed=succeed
-  this.fail=fail
+ then(succeed?,fail?){
+   if(typeof succeed ==='function'){
+    this.succeed=succeed
+   }
+   if(typeof fail ==='function'){
+    this.fail=fail
+   }
  }
 }
 export default promise

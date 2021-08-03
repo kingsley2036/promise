@@ -3,10 +3,11 @@ class promise {
 	// fail=null
 	callbacks = []
 	state = 'pending'
+	// 这是因为立即 resolved 的 Promise 是在本轮事件循环的末尾执行，总是晚于本轮循环的同步任务。
 	resolve(result) {
-		if (this.state !== 'pending') return
-		this.state = 'fulfilled'
 		setTimeout(() => {
+			if (this.state !== 'pending') return
+			this.state = 'fulfilled'
 			this.callbacks.forEach((handle) => {
 				if (typeof handle[0] === 'function') {
 					handle[0].call(undefined, result)
@@ -15,9 +16,9 @@ class promise {
 		}, 0)
 	}
 	reject(reason) {
-		if (this.state !== 'pending') return
-		this.state = 'rejected'
 			setTimeout(() => {
+				if (this.state !== 'pending') return
+				this.state = 'rejected'
         this.callbacks.forEach((handle) => {
 				if (typeof handle[1] === 'function') {
 					handle[1].call(undefined, reason)

@@ -148,4 +148,24 @@ describe('test', () => {
       done()
     })
   })
+	it('2.2.6 then可以在同一个promise里被多次调用',(done)=>{
+		const newPromise = new promise((resolve) => {
+			resolve()     
+		})
+		const callbacks=[sinon.fake(),sinon.fake(),sinon.fake()]
+		newPromise.then(callbacks[0])
+		newPromise.then(callbacks[1])
+		newPromise.then(callbacks[2])
+		setTimeout(()=>{
+			assert(callbacks[0].called)
+			assert(callbacks[1].called)
+			assert(callbacks[2].called)
+			assert(callbacks[1].calledAfter(callbacks[0]))
+			assert(callbacks[2].calledAfter(callbacks[1]))
+			done()
+		})
+	
+
+
+	})
 })
